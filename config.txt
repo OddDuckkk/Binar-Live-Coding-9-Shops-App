@@ -1,0 +1,92 @@
+1. inisialisasi NPM
+    ------------------------------------------
+    => NPM init
+    ------------------------------------------
+    inisialisasikan nama projek, deskripsi, dll
+
+2. Buat bin/www
+    bin/www = Hal yang paling pertama jalan ketika server di start
+    Lihat contoh di lampiran (1)
+
+3. install package yang dibutuhkan
+    ----------------------------------------------------------------------------
+    => NPM install nodemon --save-dev
+    => NPM install express morgan sequelize sequelize-cli pg pg-hstore dotenv
+    ----------------------------------------------------------------------------
+    Nodemon = untuk development, auto restart server saat save, hanya install di devDependencies
+    Express = framework server, middleware
+    Morgan = untuk logging, banyak opsi untuk logging
+    Sequelize = untuk setup database
+    Dotenv = untuk membaca variabel dari .env
+
+4. Konfigurasi package.json
+    Konfigurasi sesuai keperluan 
+    Konfigurasi terutama di scripts untuk start, dev, dll
+    Contoh di lampiran (2)
+
+5. Buat dan konfigurasi .env
+    Buat file .env di directory utama aplikasi
+    .env = file yang berisi variabel variabel environment, seperti variabel rahasia dan credentials
+    ----------------------------------------------------------------------------------------------------
+    Buat file .env-example di directory utama aplikasi
+    .env-example = file yang berisikan nama nama variabel yang ada di .env namun tidak dengan value nya
+    Digunakan sebagai acuan pembuatan .env kepada developer lain
+    
+6. Buat dan konfigurasi .gitignore
+    Buat file .gitignore di directory utama aplikasi
+    .gitignore = file yang mendefinisikan file atau folder yang akan di hiraukan oleh git (tidak tercatat di version history)
+    masukkan .env menghindari data rahasia tercatat di git
+    masukkan node_modules menghindari file modul tercatat di git
+
+7. inisialisasi struktur dasar sequelize
+    -------------------------
+    npx sequelize-cli init
+    -------------------------
+
+8. ubah file config.json pada folder config menjadi database.js agar bisa menjaga fleksibilitas dan keamanan pada database. selanjutnya buat file .env dan buat file .sequelizerc untuk memaksa agar sequelize membaca file database.js bukan config.json dan ubah pada file index.js pada folder models, ubah agar confignya mengarah ke database.js
+9. buat database postgre
+    npx sequelize db:create
+10. buat model/tabel dalam database nya
+    npx sequelize-cli model:generate --name User --attributes name:string,address:string,email:string,handpone:string
+11. masukan tabel dan atributnya tadi kedalam postgre kita
+    npx sequelize-cli db:migrate
+12. buat sebuah seeder / data dummy yang akan dimasukan ke dalam tabel databasenya
+    npx sequelize-cli seed:generate --name demo-user
+13. isikan file yang didalam seeder tadi, bisa mengikuti dokumentasi pada web sequelize nya
+14. masukan seed tadi untuk mengisi atribute-atribute dalam databse kita
+    npx sequelize-cli db:seed:all
+
+-----------------------------------------------------------------------
+Lampiran(1) [contoh bin/www]
+const app = require("../server");
+
+const PORT = process.env.PORT || 3000
+
+app.listen(PORT, () => {
+    console.log(`server runnig on port ${PORT}`);
+})
+
+-----------------------------------------------------------------------
+Lampiran 2 [contoh package.json]
+{
+  "name": "livecoding9",
+  "version": "1.0.0",
+  "description": "Live Coding 9 Binar FSW 2",
+  "main": "index.js",
+  "scripts": {
+    "test": "test",
+    "start": "node -r dotenv/config bin/www",
+    "dev": "nodemon -r dotenv/config bin/www"
+  },
+  "author": "brandon",
+  "license": "ISC",
+  "dependencies": {
+    "dotenv": "^16.4.5",
+    "express": "^4.21.1",
+    "morgan": "^1.10.0"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.7"
+  }
+}
+
